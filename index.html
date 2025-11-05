@@ -193,75 +193,218 @@
     <!-- CALCULADORA DE PRECIOS -->
     <section id="calculadora" class="calculator">
         <div class="container">
-            <h2 class="section-title" data-es="Calculadora de Precios" data-en="Price Calculator">Calculadora de Precios</h2>
-            <p class="section-subtitle" data-es="Obtén descuentos al contratar paquetes de limpieza" data-en="Get discounts when booking cleaning packages">
-                Obtén descuentos al contratar paquetes de limpieza
+            <h2 class="section-title" data-es="Reserva Tu Servicio" data-en="Book Your Service">Reserva Tu Servicio</h2>
+            <p class="section-subtitle" data-es="Completa tus datos y elige tu método de pago preferido" data-en="Complete your information and choose your preferred payment method">
+                Completa tus datos y elige tu método de pago preferido
             </p>
             
-            <div class="calculator-container">
-                <div class="calculator-form">
-                    <div class="form-group">
-                        <label data-es="Tipo de Departamento" data-en="Apartment Type">Tipo de Departamento</label>
-                        <select id="apartmentType">
-                            <option value="chico" data-price="500" data-es="Chico (hasta 50m²) - $500" data-en="Small (up to 50m²) - $500">Chico (hasta 50m²) - $500</option>
-                            <option value="mediano" data-price="700" data-es="Mediano (50-80m²) - $700" data-en="Medium (50-80m²) - $700">Mediano (50-80m²) - $700</option>
-                            <option value="grande" data-price="1000" data-es="Grande (más de 80m²) - $1,000" data-en="Large (over 80m²) - $1,000">Grande (más de 80m²) - $1,000</option>
-                        </select>
+            <div class="booking-container">
+                <!-- PASO 1: SELECCIÓN DE SERVICIO -->
+                <div class="booking-step" id="step1">
+                    <h3 class="step-title" data-es="Paso 1: Selecciona tu Servicio" data-en="Step 1: Select Your Service">Paso 1: Selecciona tu Servicio</h3>
+                    
+                    <div class="calculator-form">
+                        <div class="form-group">
+                            <label data-es="Tipo de Departamento" data-en="Apartment Type">Tipo de Departamento</label>
+                            <select id="apartmentType">
+                                <option value="chico" data-price="500" data-es="Chico (hasta 50m²) - $500" data-en="Small (up to 50m²) - $500">Chico (hasta 50m²) - $500</option>
+                                <option value="mediano" data-price="700" data-es="Mediano (50-80m²) - $700" data-en="Medium (50-80m²) - $700">Mediano (50-80m²) - $700</option>
+                                <option value="grande" data-price="1000" data-es="Grande (más de 80m²) - $1,000" data-en="Large (over 80m²) - $1,000">Grande (más de 80m²) - $1,000</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label data-es="Cantidad de Limpiezas" data-en="Number of Cleanings">Cantidad de Limpiezas</label>
+                            <div class="quantity-selector">
+                                <button class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" value="1" min="1" max="12" readonly>
+                                <button class="qty-btn" onclick="increaseQty()">+</button>
+                            </div>
+                            <div class="quantity-buttons">
+                                <button class="qty-preset" onclick="setQuantity(1)">1</button>
+                                <button class="qty-preset" onclick="setQuantity(5)">5</button>
+                                <button class="qty-preset" onclick="setQuantity(12)">12</button>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label data-es="Cantidad de Limpiezas" data-en="Number of Cleanings">Cantidad de Limpiezas</label>
-                        <div class="quantity-selector">
-                            <button class="qty-btn" onclick="decreaseQty()">-</button>
-                            <input type="number" id="quantity" value="1" min="1" max="12" readonly>
-                            <button class="qty-btn" onclick="increaseQty()">+</button>
+                    <div class="calculator-result">
+                        <div class="price-breakdown">
+                            <div class="breakdown-item">
+                                <span data-es="Precio por limpieza:" data-en="Price per cleaning:">Precio por limpieza:</span>
+                                <span id="pricePerCleaning">$500</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span data-es="Cantidad:" data-en="Quantity:">Cantidad:</span>
+                                <span id="quantityDisplay">1</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span data-es="Subtotal:" data-en="Subtotal:">Subtotal:</span>
+                                <span id="subtotal">$500</span>
+                            </div>
+                            <div class="breakdown-item discount" id="discountRow" style="display: none;">
+                                <span data-es="Descuento:" data-en="Discount:">Descuento:</span>
+                                <span id="discount">-$0</span>
+                            </div>
+                            <div class="breakdown-divider"></div>
+                            <div class="breakdown-item total">
+                                <span data-es="Total a Pagar:" data-en="Total to Pay:">Total a Pagar:</span>
+                                <span id="totalPrice">$500 MXN</span>
+                            </div>
                         </div>
-                        <div class="quantity-buttons">
-                            <button class="qty-preset" onclick="setQuantity(1)">1</button>
-                            <button class="qty-preset" onclick="setQuantity(5)">5</button>
-                            <button class="qty-preset" onclick="setQuantity(12)">12</button>
+
+                        <div class="discount-info" id="discountInfo" style="display: none;">
+                            <i class="fas fa-gift"></i>
+                            <p><span data-es="¡Ahorro de" data-en="Saving of">¡Ahorro de</span> <span id="savingsAmount">$0</span>!</p>
                         </div>
+
+                        <button class="btn-primary" onclick="goToStep2()">
+                            <span data-es="Continuar con mis Datos" data-en="Continue with my Information">Continuar con mis Datos</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
                     </div>
                 </div>
 
-                <div class="calculator-result">
-                    <div class="price-breakdown">
-                        <div class="breakdown-item">
-                            <span data-es="Precio por limpieza:" data-en="Price per cleaning:">Precio por limpieza:</span>
-                            <span id="pricePerCleaning">$500</span>
-                        </div>
-                        <div class="breakdown-item">
-                            <span data-es="Cantidad:" data-en="Quantity:">Cantidad:</span>
-                            <span id="quantityDisplay">1</span>
-                        </div>
-                        <div class="breakdown-item">
-                            <span data-es="Subtotal:" data-en="Subtotal:">Subtotal:</span>
-                            <span id="subtotal">$500</span>
-                        </div>
-                        <div class="breakdown-item discount" id="discountRow" style="display: none;">
-                            <span data-es="Descuento:" data-en="Discount:">Descuento:</span>
-                            <span id="discount">-$0</span>
-                        </div>
-                        <div class="breakdown-divider"></div>
-                        <div class="breakdown-item total">
-                            <span data-es="Total a Pagar:" data-en="Total to Pay:">Total a Pagar:</span>
-                            <span id="totalPrice">$500 MXN</span>
-                        </div>
-                    </div>
-
-                    <div class="discount-info" id="discountInfo" style="display: none;">
-                        <i class="fas fa-gift"></i>
-                        <p><span data-es="¡Ahorro de" data-en="Saving of">¡Ahorro de</span> <span id="savingsAmount">$0</span>!</p>
-                    </div>
-
-                    <button class="btn-primary btn-pay" onclick="proceedToPayment()">
-                        <i class="fab fa-paypal"></i>
-                        <span data-es="Pagar con PayPal" data-en="Pay with PayPal">Pagar con PayPal</span>
-                    </button>
+                <!-- PASO 2: INFORMACIÓN DEL CLIENTE -->
+                <div class="booking-step" id="step2" style="display: none;">
+                    <h3 class="step-title" data-es="Paso 2: Tus Datos" data-en="Step 2: Your Information">Paso 2: Tus Datos</h3>
                     
-                    <p class="payment-note" data-es="Pago seguro procesado por PayPal" data-en="Secure payment processed by PayPal">
-                        Pago seguro procesado por PayPal
-                    </p>
+                    <form id="clientInfoForm" class="client-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label data-es="Nombre Completo *" data-en="Full Name *">Nombre Completo *</label>
+                                <input type="text" id="clientName" required data-placeholder-es="Ej: María García" data-placeholder-en="Ex: Maria Garcia" placeholder="Ej: María García">
+                            </div>
+                            <div class="form-group">
+                                <label data-es="Email *" data-en="Email *">Email *</label>
+                                <input type="email" id="clientEmail" required data-placeholder-es="tu@email.com" data-placeholder-en="your@email.com" placeholder="tu@email.com">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label data-es="Teléfono/WhatsApp *" data-en="Phone/WhatsApp *">Teléfono/WhatsApp *</label>
+                                <input type="tel" id="clientPhone" required data-placeholder-es="322 123 4567" data-placeholder-en="322 123 4567" placeholder="322 123 4567">
+                            </div>
+                            <div class="form-group">
+                                <label data-es="Fecha Preferida *" data-en="Preferred Date *">Fecha Preferida *</label>
+                                <input type="date" id="preferredDate" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label data-es="Dirección Completa *" data-en="Complete Address *">Dirección Completa *</label>
+                            <input type="text" id="clientAddress" required data-placeholder-es="Calle, número, colonia, ciudad" data-placeholder-en="Street, number, neighborhood, city" placeholder="Calle, número, colonia, ciudad">
+                        </div>
+
+                        <div class="form-group">
+                            <label data-es="Instrucciones Especiales (opcional)" data-en="Special Instructions (optional)">Instrucciones Especiales (opcional)</label>
+                            <textarea id="specialInstructions" rows="3" data-placeholder-es="Ej: Llaves con el portero, mascota en casa, etc." data-placeholder-en="Ex: Keys with doorman, pet at home, etc." placeholder="Ej: Llaves con el portero, mascota en casa, etc."></textarea>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="button" class="btn-secondary" onclick="goToStep1()">
+                                <i class="fas fa-arrow-left"></i>
+                                <span data-es="Regresar" data-en="Go Back">Regresar</span>
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <span data-es="Continuar al Pago" data-en="Continue to Payment">Continuar al Pago</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- PASO 3: MÉTODO DE PAGO -->
+                <div class="booking-step" id="step3" style="display: none;">
+                    <h3 class="step-title" data-es="Paso 3: Método de Pago" data-en="Step 3: Payment Method">Paso 3: Método de Pago</h3>
+                    
+                    <div class="booking-summary">
+                        <h4 data-es="Resumen de tu Reserva" data-en="Booking Summary">Resumen de tu Reserva</h4>
+                        <div class="summary-details">
+                            <p><strong data-es="Servicio:" data-en="Service:">Servicio:</strong> <span id="summaryService"></span></p>
+                            <p><strong data-es="Cantidad:" data-en="Quantity:">Cantidad:</strong> <span id="summaryQuantity"></span></p>
+                            <p><strong data-es="Cliente:" data-en="Client:">Cliente:</strong> <span id="summaryName"></span></p>
+                            <p><strong data-es="Dirección:" data-en="Address:">Dirección:</strong> <span id="summaryAddress"></span></p>
+                            <p><strong data-es="Fecha:" data-en="Date:">Fecha:</strong> <span id="summaryDate"></span></p>
+                            <p class="summary-total"><strong data-es="Total:" data-en="Total:">Total:</strong> <span id="summaryTotal"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="payment-options">
+                        <h4 data-es="Elige tu Método de Pago" data-en="Choose Your Payment Method">Elige tu Método de Pago</h4>
+                        
+                        <div class="payment-methods">
+                            <!-- PAYPAL -->
+                            <div class="payment-card" onclick="selectPaymentMethod('paypal')">
+                                <input type="radio" name="paymentMethod" id="paypalRadio" value="paypal">
+                                <label for="paypalRadio">
+                                    <div class="payment-icon">
+                                        <i class="fab fa-paypal"></i>
+                                    </div>
+                                    <div class="payment-info">
+                                        <h5>PayPal</h5>
+                                        <p data-es="Paga con tarjeta de crédito/débito" data-en="Pay with credit/debit card">Paga con tarjeta de crédito/débito</p>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- TRANSFERENCIA -->
+                            <div class="payment-card" onclick="selectPaymentMethod('transfer')">
+                                <input type="radio" name="paymentMethod" id="transferRadio" value="transfer">
+                                <label for="transferRadio">
+                                    <div class="payment-icon">
+                                        <i class="fas fa-university"></i>
+                                    </div>
+                                    <div class="payment-info">
+                                        <h5 data-es="Transferencia Bancaria" data-en="Bank Transfer">Transferencia Bancaria</h5>
+                                        <p data-es="Te enviamos los datos por WhatsApp" data-en="We'll send you the details via WhatsApp">Te enviamos los datos por WhatsApp</p>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- MERCADO PAGO -->
+                            <div class="payment-card" onclick="selectPaymentMethod('mercadopago')">
+                                <input type="radio" name="paymentMethod" id="mercadopagoRadio" value="mercadopago">
+                                <label for="mercadopagoRadio">
+                                    <div class="payment-icon">
+                                        <i class="fas fa-credit-card"></i>
+                                    </div>
+                                    <div class="payment-info">
+                                        <h5>Mercado Pago</h5>
+                                        <p data-es="Paga con tarjeta o en efectivo" data-en="Pay with card or cash">Paga con tarjeta o en efectivo</p>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- EFECTIVO -->
+                            <div class="payment-card" onclick="selectPaymentMethod('cash')">
+                                <input type="radio" name="paymentMethod" id="cashRadio" value="cash">
+                                <label for="cashRadio">
+                                    <div class="payment-icon">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </div>
+                                    <div class="payment-info">
+                                        <h5 data-es="Efectivo" data-en="Cash">Efectivo</h5>
+                                        <p data-es="Paga en efectivo al recibir el servicio" data-en="Pay cash when receiving the service">Paga en efectivo al recibir el servicio</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="paymentInstructions" style="display: none; margin-top: 30px;"></div>
+
+                        <div class="form-buttons">
+                            <button type="button" class="btn-secondary" onclick="goToStep2()">
+                                <i class="fas fa-arrow-left"></i>
+                                <span data-es="Regresar" data-en="Go Back">Regresar</span>
+                            </button>
+                            <button type="button" class="btn-primary" id="confirmBookingBtn" onclick="confirmBooking()" disabled>
+                                <span data-es="Confirmar Reserva" data-en="Confirm Booking">Confirmar Reserva</span>
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -447,6 +590,19 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- BOTÓN PARA DEJAR RESEÑA -->
+            <div class="leave-review-section">
+                <h3 data-es="¿Ya usaste nuestro servicio?" data-en="Have you used our service?">¿Ya usaste nuestro servicio?</h3>
+                <p data-es="Tu opinión es muy importante para nosotros" data-en="Your opinion is very important to us">Tu opinión es muy importante para nosotros</p>
+                <a href="https://wa.me/523221086599?text=Hola,%20quiero%20dejar%20una%20reseña%20sobre%20el%20servicio" target="_blank" class="btn-primary">
+                    <i class="fas fa-star"></i>
+                    <span data-es="Dejar mi Reseña" data-en="Leave my Review">Dejar mi Reseña</span>
+                </a>
+                <p class="review-note" data-es="Envía tu reseña por WhatsApp y la publicaremos aquí" data-en="Send your review via WhatsApp and we'll publish it here">
+                    Envía tu reseña por WhatsApp y la publicaremos aquí
+                </p>
             </div>
         </div>
     </section>

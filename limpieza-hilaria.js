@@ -4,11 +4,320 @@
 
 // VARIABLES GLOBALES
 let currentLang = 'es';
+let currentStep = 1;
+let bookingData = {};
+
 const prices = {
     chico: 500,
     mediano: 700,
     grande: 1000
 };
+
+// ===================================
+// NAVEGACIÓN ENTRE PASOS
+// ===================================
+function goToStep1() {
+    document.getElementById('step1').style.display = 'block';
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step3').style.display = 'none';
+    currentStep = 1;
+    window.scrollTo({ top: document.getElementById('calculadora').offsetTop - 100, behavior: 'smooth' });
+}
+
+function goToStep2() {
+    // Guardar datos del paso 1
+    bookingData.apartmentType = document.getElementById('apartmentType').value;
+    bookingData.quantity = parseInt(document.getElementById('quantity').value);
+    bookingData.basePrice = prices[bookingData.apartmentType];
+    bookingData.total = calculateTotal();
+    
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
+    document.getElementById('step3').style.display = 'none';
+    currentStep = 2;
+    window.scrollTo({ top: document.getElementById('calculadora').offsetTop - 100, behavior: 'smooth' });
+}
+
+function goToStep3() {
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step3').style.display = 'block';
+    currentStep = 3;
+    
+    // Actualizar resumen
+    updateBookingSummary();
+    window.scrollTo({ top: document.getElementById('calculadora').offsetTop - 100, behavior: 'smooth' });
+}
+
+// ===================================
+// FORMULARIO DE INFORMACIÓN
+// ===================================
+document.addEventListener('DOMContentLoaded', function() {
+    const clientForm = document.getElementById('clientInfoForm');
+    if (clientForm) {
+        clientForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Guardar datos del cliente
+            bookingData.clientName = document.getElementById('clientName').value;
+            bookingData.clientEmail = document.getElementById('clientEmail').value;
+            bookingData.clientPhone = document.getElementById('clientPhone').value;
+            bookingData.clientAddress = document.getElementById('clientAddress').value;
+            bookingData.preferredDate = document.getElementById('preferredDate').value;
+            bookingData.specialInstructions = document.getElementById('specialInstructions').value;
+            
+            // Ir al paso 3
+            goToStep3();
+        });
+    }
+});
+
+// ===================================
+// ACTUALIZAR RESUMEN DE RESERVA
+// ===================================
+function updateBookingSummary() {
+    const serviceNames = {
+        'es': {
+            'chico': 'Departamento Chico',
+            'mediano': 'Departamento Mediano',
+            'grande': 'Departamento Grande'
+        },
+        'en': {
+            'chico': 'Small Apartment',
+            'mediano': 'Medium Apartment',
+            'grande': 'Large Apartment'
+        }
+    };
+    
+    document.getElementById('summaryService').textContent = serviceNames[currentLang][bookingData.apartmentType];
+    document.getElementById('summaryQuantity').textContent = bookingData.quantity + (currentLang === 'es' ? ' limpieza(s)' : ' cleaning(s)');
+    document.getElementById('summaryName').textContent = bookingData.clientName;
+    document.getElementById('summaryAddress').textContent = bookingData.clientAddress;
+    document.getElementById('summaryDate').textContent = formatDate(bookingData.preferredDate);
+    document.getElementById('summaryTotal').textContent = '$' + bookingData.total.toLocaleString() + ' MXN';
+}
+
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString(currentLang === 'es' ? 'es-MX' : 'en-US', options);
+}
+
+// ===================================
+// SELECCIÓN DE MÉTODO DE PAGO
+// ===================================
+function selectPaymentMethod(method) {
+    // Remover selección anterior
+    document.querySelectorAll('.payment-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Seleccionar nuevo
+    document.querySelector(`#${method}Radio`).checked = true;
+    document.querySelector(`#${method}Radio`).closest('.payment-card').classList.add('selected');
+    
+    // Habilitar botón de confirmar
+    document.getElementById('confirmBookingBtn').disabled = false;
+    
+    // Mostrar instrucciones según método
+    showPaymentInstructions(method);
+}
+
+function showPaymentInstructions(method) {
+    const instructionsDiv = document.getElementById('paymentInstructions');
+    instructionsDiv.style.display = 'block';
+    
+    const instructions = {
+        'paypal': {
+            'es': `
+                <h5><i class="fab fa-paypal"></i> PayPal</h5>
+                <p>Al confirmar tu reserva serás redirigido a PayPal para completar el pago de forma segura con tarjeta de crédito o débito.</p>
+                <p><strong>Email de PayPal:</strong> logan.gollas314@gmail.com</p>
+            `,
+            'en': `
+                <h5><i class="fab fa-paypal"></i> PayPal</h5>
+                <p>When confirming your booking, you will be redirected to PayPal to complete the payment securely with credit or debit card.</p>
+                <p><strong>PayPal Email:</strong> logan.gollas314@gmail.com</p>
+            `
+        },
+        'transfer': {
+            'es': `
+                <h5><i class="fas fa-university"></i> Transferencia Bancaria</h5>
+                <p>Al confirmar tu reserva, recibirás los datos bancarios por WhatsApp para realizar tu transferencia.</p>
+                <p><strong>Te enviaremos:</strong></p>
+                <ul>
+                    <li>Banco y número de cuenta</li>
+                    <li>CLABE interbancaria</li>
+                    <li>Nombre del titular</li>
+                </ul>
+                <p>Una vez realizada la transferencia, envíanos tu comprobante por WhatsApp.</p>
+            `,
+            'en': `
+                <h5><i class="fas fa-university"></i> Bank Transfer</h5>
+                <p>When confirming your booking, you will receive the bank details via WhatsApp to make your transfer.</p>
+                <p><strong>We will send you:</strong></p>
+                <ul>
+                    <li>Bank and account number</li>
+                    <li>Interbank CLABE</li>
+                    <li>Account holder name</li>
+                </ul>
+                <p>Once the transfer is made, send us your receipt via WhatsApp.</p>
+            `
+        },
+        'mercadopago': {
+            'es': `
+                <h5><i class="fas fa-credit-card"></i> Mercado Pago</h5>
+                <p>Al confirmar tu reserva, recibirás un enlace de pago de Mercado Pago por WhatsApp.</p>
+                <p><strong>Puedes pagar con:</strong></p>
+                <ul>
+                    <li>Tarjeta de crédito o débito</li>
+                    <li>Transferencia bancaria</li>
+                    <li>Efectivo en tiendas de conveniencia</li>
+                </ul>
+            `,
+            'en': `
+                <h5><i class="fas fa-credit-card"></i> Mercado Pago</h5>
+                <p>When confirming your booking, you will receive a Mercado Pago payment link via WhatsApp.</p>
+                <p><strong>You can pay with:</strong></p>
+                <ul>
+                    <li>Credit or debit card</li>
+                    <li>Bank transfer</li>
+                    <li>Cash at convenience stores</li>
+                </ul>
+            `
+        },
+        'cash': {
+            'es': `
+                <h5><i class="fas fa-money-bill-wave"></i> Efectivo</h5>
+                <p>No necesitas pagar ahora. El pago se realizará en efectivo al momento de recibir el servicio.</p>
+                <p><strong>Importante:</strong></p>
+                <ul>
+                    <li>Ten el monto exacto listo</li>
+                    <li>Recibirás un recibo por tu pago</li>
+                    <li>La reserva queda confirmada al agendar</li>
+                </ul>
+            `,
+            'en': `
+                <h5><i class="fas fa-money-bill-wave"></i> Cash</h5>
+                <p>No need to pay now. Payment will be made in cash when receiving the service.</p>
+                <p><strong>Important:</strong></p>
+                <ul>
+                    <li>Have the exact amount ready</li>
+                    <li>You will receive a receipt for your payment</li>
+                    <li>Booking is confirmed upon scheduling</li>
+                </ul>
+            `
+        }
+    };
+    
+    instructionsDiv.innerHTML = instructions[method][currentLang];
+}
+
+// ===================================
+// CONFIRMAR RESERVA
+// ===================================
+function confirmBooking() {
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    bookingData.paymentMethod = paymentMethod;
+    
+    // Enviar información por WhatsApp
+    sendBookingToWhatsApp();
+    
+    // Procesar según método de pago
+    if (paymentMethod === 'paypal') {
+        processPayPalPayment();
+    } else {
+        showConfirmationMessage();
+    }
+}
+
+function sendBookingToWhatsApp() {
+    const message = `
+🌟 NUEVA RESERVA - LIMPIEZA HILARIA
+
+📋 INFORMACIÓN DEL SERVICIO:
+• Tipo: ${bookingData.apartmentType.toUpperCase()}
+• Cantidad de limpiezas: ${bookingData.quantity}
+• Precio por limpieza: $${bookingData.basePrice}
+• Total: $${bookingData.total} MXN
+
+👤 DATOS DEL CLIENTE:
+• Nombre: ${bookingData.clientName}
+• Email: ${bookingData.clientEmail}
+• Teléfono: ${bookingData.clientPhone}
+• Dirección: ${bookingData.clientAddress}
+
+📅 FECHA PREFERIDA: ${bookingData.preferredDate}
+
+💳 MÉTODO DE PAGO: ${bookingData.paymentMethod.toUpperCase()}
+
+📝 INSTRUCCIONES ESPECIALES:
+${bookingData.specialInstructions || 'Ninguna'}
+
+---
+Reserva realizada desde: ${window.location.href}
+    `.trim();
+    
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappURL = `https://wa.me/523221086599?text=${encodedMessage}`;
+    
+    // Abrir WhatsApp en nueva pestaña
+    window.open(whatsappURL, '_blank');
+}
+
+function processPayPalPayment() {
+    const total = bookingData.total;
+    const description = `${bookingData.quantity} limpieza(s) - ${bookingData.apartmentType}`;
+    
+    // Crear formulario PayPal
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://www.paypal.com/cgi-bin/webscr';
+    form.target = '_blank';
+    
+    const fields = {
+        'cmd': '_xclick',
+        'business': 'logan.gollas314@gmail.com',
+        'item_name': `Limpieza Hilaria - ${description}`,
+        'amount': (total / 20).toFixed(2), // Convertir MXN a USD
+        'currency_code': 'USD',
+        'return': window.location.href + '?payment=success',
+        'cancel_return': window.location.href + '?payment=cancelled',
+        'custom': JSON.stringify({
+            name: bookingData.clientName,
+            email: bookingData.clientEmail,
+            phone: bookingData.clientPhone
+        })
+    };
+    
+    for (let [key, value] of Object.entries(fields)) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+    }
+    
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+    
+    showConfirmationMessage();
+}
+
+function showConfirmationMessage() {
+    const messages = {
+        'es': '¡Reserva confirmada! Hemos enviado los detalles por WhatsApp. Te contactaremos pronto para confirmar tu fecha.',
+        'en': 'Booking confirmed! We have sent the details via WhatsApp. We will contact you soon to confirm your date.'
+    };
+    
+    alert(messages[currentLang]);
+    
+    // Reiniciar formulario
+    setTimeout(() => {
+        location.reload();
+    }, 2000);
+}
 
 // ===================================
 // SISTEMA BILINGÜE
@@ -18,7 +327,6 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
         const lang = this.getAttribute('data-lang');
         switchLanguage(lang);
         
-        // Actualizar botones activos
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
     });
@@ -27,7 +335,6 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 function switchLanguage(lang) {
     currentLang = lang;
     
-    // Cambiar todos los elementos con data-es y data-en
     document.querySelectorAll('[data-es]').forEach(element => {
         if (lang === 'es') {
             element.textContent = element.getAttribute('data-es');
@@ -36,7 +343,6 @@ function switchLanguage(lang) {
         }
     });
     
-    // Cambiar placeholders de inputs
     document.querySelectorAll('[data-placeholder-es]').forEach(element => {
         if (lang === 'es') {
             element.placeholder = element.getAttribute('data-placeholder-es');
@@ -45,7 +351,6 @@ function switchLanguage(lang) {
         }
     });
     
-    // Cambiar options de select
     document.querySelectorAll('option[data-es]').forEach(option => {
         if (lang === 'es') {
             option.textContent = option.getAttribute('data-es');
@@ -54,7 +359,6 @@ function switchLanguage(lang) {
         }
     });
     
-    // Recalcular precios con nuevo idioma
     calculatePrice();
 }
 
@@ -80,7 +384,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 const apartmentTypeSelect = document.getElementById('apartmentType');
 const quantityInput = document.getElementById('quantity');
 
-// Event listeners para calculadora
 if (apartmentTypeSelect) {
     apartmentTypeSelect.addEventListener('change', calculatePrice);
 }
@@ -116,13 +419,9 @@ function calculatePrice() {
     const apartmentType = document.getElementById('apartmentType').value;
     const quantity = parseInt(document.getElementById('quantity').value);
     
-    // Obtener precio base
     const basePrice = prices[apartmentType];
-    
-    // Calcular subtotal
     const subtotal = basePrice * quantity;
     
-    // Calcular descuento
     let discountPercent = 0;
     if (quantity >= 12) {
         discountPercent = 20;
@@ -133,13 +432,11 @@ function calculatePrice() {
     const discountAmount = Math.round(subtotal * (discountPercent / 100));
     const total = subtotal - discountAmount;
     
-    // Actualizar UI
     document.getElementById('pricePerCleaning').textContent = `$${basePrice.toLocaleString()}`;
     document.getElementById('quantityDisplay').textContent = quantity;
     document.getElementById('subtotal').textContent = `$${subtotal.toLocaleString()}`;
     document.getElementById('totalPrice').textContent = `$${total.toLocaleString()} MXN`;
     
-    // Mostrar/ocultar descuento
     const discountRow = document.getElementById('discountRow');
     const discountInfo = document.getElementById('discountInfo');
     
@@ -154,19 +451,12 @@ function calculatePrice() {
     }
 }
 
-// Calcular precio inicial
-calculatePrice();
-
-// ===================================
-// PROCESAMIENTO DE PAGO PAYPAL
-// ===================================
-function proceedToPayment() {
+function calculateTotal() {
     const apartmentType = document.getElementById('apartmentType').value;
     const quantity = parseInt(document.getElementById('quantity').value);
     const basePrice = prices[apartmentType];
     const subtotal = basePrice * quantity;
     
-    // Calcular descuento
     let discountPercent = 0;
     if (quantity >= 12) {
         discountPercent = 20;
@@ -175,90 +465,10 @@ function proceedToPayment() {
     }
     
     const discountAmount = Math.round(subtotal * (discountPercent / 100));
-    const total = subtotal - discountAmount;
-    
-    // Obtener nombre del tipo de departamento
-    const typeNames = {
-        'es': {
-            'chico': 'Departamento Chico',
-            'mediano': 'Departamento Mediano',
-            'grande': 'Departamento Grande'
-        },
-        'en': {
-            'chico': 'Small Apartment',
-            'mediano': 'Medium Apartment',
-            'grande': 'Large Apartment'
-        }
-    };
-    
-    const itemName = typeNames[currentLang][apartmentType];
-    const description = currentLang === 'es' 
-        ? `${quantity} limpieza(s) - ${itemName}`
-        : `${quantity} cleaning(s) - ${itemName}`;
-    
-    // Crear formulario PayPal
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = 'https://www.paypal.com/cgi-bin/webscr';
-    form.target = '_blank';
-    
-    const fields = {
-        'cmd': '_xclick',
-        'business': 'logan.gollas314@gmail.com',
-        'item_name': description,
-        'amount': (total / 20).toFixed(2), // Convertir MXN a USD (aprox)
-        'currency_code': 'USD',
-        'return': window.location.href + '?payment=success',
-        'cancel_return': window.location.href + '?payment=cancelled',
-        'notify_url': '',
-        'no_shipping': '1',
-        'no_note': '1',
-        'charset': 'utf-8'
-    };
-    
-    for (let [key, value] of Object.entries(fields)) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
-    }
-    
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-    
-    // Mostrar mensaje de confirmación
-    const message = currentLang === 'es'
-        ? '¡Serás redirigido a PayPal para completar tu pago de forma segura!'
-        : 'You will be redirected to PayPal to complete your payment securely!';
-    
-    alert(message);
+    return subtotal - discountAmount;
 }
 
-// Verificar si hay resultado de pago en URL
-window.addEventListener('load', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const paymentStatus = urlParams.get('payment');
-    
-    if (paymentStatus === 'success') {
-        const message = currentLang === 'es'
-            ? '¡Pago exitoso! Nos pondremos en contacto contigo pronto para programar tu servicio.'
-            : 'Payment successful! We will contact you soon to schedule your service.';
-        alert(message);
-        
-        // Limpiar URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-    } else if (paymentStatus === 'cancelled') {
-        const message = currentLang === 'es'
-            ? 'Pago cancelado. Si tienes alguna pregunta, contáctanos por WhatsApp.'
-            : 'Payment cancelled. If you have any questions, contact us via WhatsApp.';
-        alert(message);
-        
-        // Limpiar URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-});
+calculatePrice();
 
 // ===================================
 // EFECTO NAVBAR AL HACER SCROLL
@@ -286,8 +496,6 @@ if (contactForm) {
         
         alert(message);
         contactForm.reset();
-        
-        // Aquí puedes agregar integración con EmailJS o tu backend
     });
 }
 
@@ -308,7 +516,6 @@ const observer = new IntersectionObserver(function(entries) {
     });
 }, observerOptions);
 
-// Observar elementos para animar
 document.querySelectorAll('.service-card, .testimonial-card, .gallery-item, .package-card, .stat-box').forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(30px)';
@@ -317,69 +524,10 @@ document.querySelectorAll('.service-card, .testimonial-card, .gallery-item, .pac
 });
 
 // ===================================
-// CONTADOR ANIMADO
-// ===================================
-function animateCounter(element, target, duration = 2000) {
-    let current = 0;
-    const increment = target / (duration / 16);
-    
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-            element.textContent = target + '+';
-            clearInterval(timer);
-        } else {
-            element.textContent = Math.floor(current) + '+';
-        }
-    }, 16);
-}
-
-// Animar contadores cuando sean visibles
-const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
-            entry.target.classList.add('counted');
-            const h4 = entry.target.querySelector('h4');
-            const target = parseInt(h4.textContent);
-            animateCounter(h4, target);
-        }
-    });
-}, { threshold: 0.5 });
-
-document.querySelectorAll('.stat-box').forEach(stat => {
-    statsObserver.observe(stat);
-});
-
-// ===================================
-// SMOOTH SCROLL MEJORADO
-// ===================================
-document.querySelectorAll('.btn-service').forEach(btn => {
-    btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        const calculatorSection = document.getElementById('calculadora');
-        if (calculatorSection) {
-            calculatorSection.scrollIntoView({ behavior: 'smooth' });
-            
-            // Highlight la calculadora brevemente
-            calculatorSection.style.animation = 'highlight 2s';
-            setTimeout(() => {
-                calculatorSection.style.animation = '';
-            }, 2000);
-        }
-    });
-});
-
-// ===================================
-// PROTECCIÓN DE PRECIOS
-// ===================================
-// Evitar que se cambien los precios desde la consola
-Object.freeze(prices);
-
-// ===================================
 // LOG DE BIENVENIDA
 // ===================================
 console.log('%c✨ Limpieza Hilaria', 'color: #2c5f2d; font-size: 30px; font-weight: bold;');
-console.log('%cServicio profesional de limpieza en Nuevo Nayarit', 'color: #666; font-size: 14px;');
+console.log('%cSistema de reservas v2.0 - Multi-pago', 'color: #666; font-size: 14px;');
 console.log('%c💎 Web diseñada por TheWuero Web Design', 'color: #f8b739; font-size: 12px;');
 
 // ===================================
@@ -388,8 +536,16 @@ console.log('%c💎 Web diseñada por TheWuero Web Design', 'color: #f8b739; fon
 window.addEventListener('load', function() {
     const browserLang = navigator.language || navigator.userLanguage;
     
-    // Si el navegador está en inglés, cambiar automáticamente
     if (browserLang.startsWith('en') && currentLang === 'es') {
         document.querySelector('.lang-btn[data-lang="en"]').click();
+    }
+    
+    // Establecer fecha mínima (mañana)
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const minDate = tomorrow.toISOString().split('T')[0];
+    const dateInput = document.getElementById('preferredDate');
+    if (dateInput) {
+        dateInput.setAttribute('min', minDate);
     }
 });
