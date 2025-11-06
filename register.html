@@ -610,6 +610,7 @@
         if (registerForm) {
             registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            console.log('🔥 Formulario enviado');
             
             const nombre = document.getElementById('nombre').value.trim();
             const apellido = document.getElementById('apellido').value.trim();
@@ -619,21 +620,28 @@
             const confirmPassword = document.getElementById('confirmPassword').value;
             const terms = document.getElementById('terms').checked;
             
+            console.log('📝 Datos:', { nombre, apellido, email, telefono, terms });
+            
             // Validations
             if (!terms) {
+                console.log('❌ Términos no aceptados');
                 showAlert('Debes aceptar los términos y condiciones', 'error');
                 return;
             }
             
             if (password !== confirmPassword) {
+                console.log('❌ Contraseñas no coinciden');
                 showAlert('Las contraseñas no coinciden', 'error');
                 return;
             }
             
             if (password.length < 6) {
+                console.log('❌ Contraseña muy corta');
                 showAlert('La contraseña debe tener al menos 6 caracteres', 'error');
                 return;
             }
+            
+            console.log('✅ Validaciones pasadas, creando usuario...');
             
             const btn = document.getElementById('registerBtn');
             const text = document.getElementById('registerText');
@@ -645,15 +653,20 @@
             loading.style.display = 'block';
             
             try {
+                console.log('📧 Creando usuario en Firebase Auth...');
                 // Create user
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
+                console.log('✅ Usuario creado en Auth:', user.uid);
                 
+                console.log('📝 Actualizando perfil...');
                 // Update profile
                 await updateProfile(user, {
                     displayName: `${nombre} ${apellido}`
                 });
+                console.log('✅ Perfil actualizado');
                 
+                console.log('💾 Guardando en Firestore...');
                 // Save user data to Firestore
                 await setDoc(doc(db, 'users', user.uid), {
                     nombre: nombre,
@@ -665,8 +678,10 @@
                     createdAt: serverTimestamp(),
                     updatedAt: serverTimestamp()
                 });
+                console.log('✅ Guardado en Firestore');
                 
                 showAlert('¡Cuenta creada exitosamente! Redirigiendo...', 'success');
+                console.log('🎉 Registro completado, redirigiendo...');
                 
                 // Redirect to client dashboard
                 setTimeout(() => {
@@ -674,6 +689,10 @@
                 }, 1500);
                 
             } catch (error) {
+                console.error('❌ Error en registro:', error);
+                console.error('Código de error:', error.code);
+                console.error('Mensaje:', error.message);
+                
                 let errorMessage = 'Error al crear la cuenta';
                 
                 switch (error.code) {
@@ -701,6 +720,7 @@
                 loading.style.display = 'none';
             }
         });
+        }
     </script>
 </body>
 </html>
