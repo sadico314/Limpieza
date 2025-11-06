@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Limpieza Hilaria</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primario: #2c5f2d;
+            --color-secundario: #97c1a7;
+            --color-acento: #f8b739;
+            --color-oscuro: #1a1a1a;
+            --color-gris: #666666;
+            --color-gris-claro: #f5f5f5;
+            --color-blanco: #ffffff;
+            --fuente-principal: 'Montserrat', sans-serif;
+        }
+
+        body {
+            font-family: var(--fuente-principal);
+            background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: var(--color-blanco);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            max-width: 450px;
+            width: 100%;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+            padding: 40px 30px;
+            text-align: center;
+            color: var(--color-blanco);
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .login-form {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--color-oscuro);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-gris);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid var(--color-gris-claro);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: var(--fuente-principal);
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-primario);
+            box-shadow: 0 0 0 3px rgba(44, 95, 45, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--color-gris);
+            transition: color 0.3s;
+        }
+
+        .password-toggle:hover {
+            color: var(--color-primario);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password a {
+            color: var(--color-primario);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .forgot-password a:hover {
+            color: var(--color-secundario);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: var(--color-primario);
+            color: var(--color-blanco);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-login:hover {
+            background: #235023;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 95, 45, 0.3);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--color-gris-claro);
+        }
+
+        .divider span {
+            background: var(--color-blanco);
+            padding: 0 15px;
+            position: relative;
+            color: var(--color-gris);
+            font-size: 0.9rem;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--color-gris-claro);
+        }
+
+        .register-link p {
+            color: var(--color-gris);
+            margin-bottom: 15px;
+        }
+
+        .btn-register {
+            display: inline-block;
+            padding: 12px 30px;
+            background: transparent;
+            color: var(--color-primario);
+            border: 2px solid var(--color-primario);
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-register:hover {
+            background: var(--color-primario);
+            color: var(--color-blanco);
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: var(--color-blanco);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            transition: opacity 0.3s;
+        }
+
+        .back-home a:hover {
+            opacity: 0.8;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-error {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+        }
+
+        .alert-success {
+            background: #efe;
+            border: 1px solid #cfc;
+            color: #3c3;
+        }
+
+        .loading {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--color-blanco);
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 20px;
+            }
+
+            .login-header {
+                padding: 30px 20px;
+            }
+
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .login-form {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <i class="fas fa-sparkles"></i>
+            </div>
+            <h1>Limpieza Hilaria</h1>
+            <p>Inicia sesión en tu cuenta</p>
+        </div>
+
+        <div class="login-form">
+            <div id="alert" class="alert"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" required placeholder="tu@email.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" required placeholder="••••••••">
+                        <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                    </div>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#" id="forgotPasswordLink">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <span id="loginText">Iniciar Sesión</span>
+                    <div class="loading" id="loginLoading"></div>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>¿No tienes cuenta?</span>
+            </div>
+
+            <div class="register-link">
+                <p>Crea una cuenta para acceder a beneficios exclusivos</p>
+                <a href="register.html" class="btn-register">
+                    <i class="fas fa-user-plus"></i> Crear Cuenta
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-home">
+        <a href="index.html">
+            <i class="fas fa-arrow-left"></i>
+            Volver al inicio
+        </a>
+    </div>
+
+    <script type="module">
+        import { auth } from './firebase-config.js';
+        import { 
+            signInWithEmailAndPassword,
+            sendPasswordResetEmail
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const password = document.getElementById('password');
+            const icon = this;
+            
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                password.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Show alert
+        function showAlert(message, type = 'error') {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            const text = document.getElementById('loginText');
+            const loading = document.getElementById('loginLoading');
+            
+            // Show loading
+            btn.disabled = true;
+            text.style.display = 'none';
+            loading.style.display = 'block';
+            
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                showAlert('¡Inicio de sesión exitoso! Redirigiendo...', 'success');
+                
+                // Redirect based on email (admin or client)
+                setTimeout(() => {
+                    if (email === 'logan.gollas314@gmail.com' || email.includes('admin')) {
+                        window.location.href = 'dashboard-admin.html';
+                    } else {
+                        window.location.href = 'dashboard-cliente.html';
+                    }
+                }, 1500);
+                
+            } catch (error) {
+                let errorMessage = 'Error al iniciar sesión';
+                
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                        errorMessage = 'El correo electrónico no es válido';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = 'Esta cuenta ha sido deshabilitada';
+                        break;
+                    case 'auth/user-not-found':
+                        errorMessage = 'No existe una cuenta con este correo';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'Contraseña incorrecta';
+                        break;
+                    case 'auth/invalid-credential':
+                        errorMessage = 'Credenciales inválidas. Verifica tu email y contraseña';
+                        break;
+                    default:
+                        errorMessage = error.message;
+                }
+                
+                showAlert(errorMessage, 'error');
+                
+                // Hide loading
+                btn.disabled = false;
+                text.style.display = 'block';
+                loading.style.display = 'none';
+            }
+        });
+
+        // Forgot password
+        document.getElementById('forgotPasswordLink').addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            
+            if (!email) {
+                showAlert('Por favor ingresa tu correo electrónico primero', 'error');
+                return;
+            }
+            
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showAlert('Se ha enviado un correo para restablecer tu contraseña', 'success');
+            } catch (error) {
+                showAlert('Error al enviar el correo: ' + error.message, 'error');
+            }
+        });
+    </script>
+</body>
+</html>

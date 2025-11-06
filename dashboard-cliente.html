@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Panel - Limpieza Hilaria</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primario: #2c5f2d;
+            --color-secundario: #97c1a7;
+            --color-acento: #f8b739;
+            --color-oscuro: #1a1a1a;
+            --color-gris: #666666;
+            --color-gris-claro: #f5f5f5;
+            --color-blanco: #ffffff;
+            --fuente-principal: 'Montserrat', sans-serif;
+        }
+
+        body {
+            font-family: var(--fuente-principal);
+            background: var(--color-gris-claro);
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: var(--color-blanco);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primario);
+        }
+
+        .logo i {
+            color: var(--color-acento);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--color-oscuro);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-primario);
+            color: var(--color-blanco);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            padding: 8px 20px;
+            background: transparent;
+            color: var(--color-primario);
+            border: 2px solid var(--color-primario);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: var(--color-primario);
+            color: var(--color-blanco);
+        }
+
+        /* DASHBOARD */
+        .dashboard {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+            color: var(--color-blanco);
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .welcome-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--color-blanco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .stat-icon.primary {
+            background: rgba(44, 95, 45, 0.1);
+            color: var(--color-primario);
+        }
+
+        .stat-icon.accent {
+            background: rgba(248, 183, 57, 0.1);
+            color: var(--color-acento);
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            color: var(--color-primario);
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            color: var(--color-gris);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--color-oscuro);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            padding: 12px 30px;
+            background: var(--color-primario);
+            color: var(--color-blanco);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background: #235023;
+            transform: translateY(-2px);
+        }
+
+        .bookings-section {
+            background: var(--color-blanco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .booking-card {
+            border: 2px solid var(--color-gris-claro);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .booking-card:hover {
+            border-color: var(--color-primario);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .booking-title {
+            font-size: 1.3rem;
+            color: var(--color-oscuro);
+            font-weight: 600;
+        }
+
+        .booking-status {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-pendiente {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmada {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-completada {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelada {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .booking-detail {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--color-gris);
+        }
+
+        .booking-detail i {
+            color: var(--color-primario);
+            font-size: 1.1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--color-gris);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .welcome-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-sparkles"></i>
+                <span>Limpieza Hilaria</span>
+            </div>
+            <div class="nav-menu">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userName">Cargando...</span>
+                </div>
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard">
+        <!-- WELCOME -->
+        <div class="welcome-section">
+            <h1>¡Bienvenido de vuelta! <span id="welcomeName"></span></h1>
+            <p>Gestiona tus reservas y mantén tu hogar impecable</p>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon primary">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="totalBookings">0</h3>
+                    <p>Total de Limpiezas</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon accent">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="clientType">Nuevo</h3>
+                    <p>Tipo de Cliente</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESERVAS -->
+        <div class="bookings-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 class="section-title">
+                    <i class="fas fa-calendar"></i>
+                    Mis Reservas
+                </h2>
+                <a href="index.html#calculadora" class="btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Nueva Reserva
+                </a>
+            </div>
+
+            <div id="bookingsList">
+                <div class="empty-state">
+                    <i class="fas fa-calendar-times"></i>
+                    <h3>No tienes reservas aún</h3>
+                    <p>¡Agenda tu primera limpieza ahora!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { 
+            collection, 
+            query, 
+            where, 
+            getDocs,
+            orderBy,
+            doc,
+            getDoc
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Check authentication
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Load user data
+            await loadUserData(user);
+            await loadBookings(user.uid);
+        });
+
+        async function loadUserData(user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    const nombre = userData.nombre || user.displayName || 'Usuario';
+                    
+                    document.getElementById('userName').textContent = nombre;
+                    document.getElementById('welcomeName').textContent = nombre;
+                    
+                    // Avatar inicial
+                    const inicial = nombre.charAt(0).toUpperCase();
+                    document.getElementById('userAvatar').textContent = inicial;
+                    
+                    // Tipo de cliente
+                    const clientType = userData.isFrequent ? 'Frecuente ⭐' : 'Nuevo';
+                    document.getElementById('clientType').textContent = clientType;
+                } else {
+                    document.getElementById('userName').textContent = user.email.split('@')[0];
+                    document.getElementById('welcomeName').textContent = user.email.split('@')[0];
+                }
+            } catch (error) {
+                console.error('Error loading user:', error);
+            }
+        }
+
+        async function loadBookings(userId) {
+            try {
+                const q = query(
+                    collection(db, 'bookings'),
+                    where('userId', '==', userId),
+                    orderBy('createdAt', 'desc')
+                );
+                
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    return;
+                }
+                
+                const bookingsList = document.getElementById('bookingsList');
+                bookingsList.innerHTML = '';
+                
+                let count = 0;
+                querySnapshot.forEach((doc) => {
+                    const booking = doc.data();
+                    count++;
+                    
+                    const bookingCard = createBookingCard(booking);
+                    bookingsList.appendChild(bookingCard);
+                });
+                
+                document.getElementById('totalBookings').textContent = count;
+                
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+            }
+        }
+
+        function createBookingCard(booking) {
+            const card = document.createElement('div');
+            card.className = 'booking-card';
+            
+            const typeNames = {
+                'chico': 'Departamento Chico',
+                'mediano': 'Departamento Mediano',
+                'grande': 'Departamento Grande'
+            };
+            
+            const paymentNames = {
+                'paypal': 'PayPal',
+                'transfer': 'Transferencia',
+                'mercadopago': 'Mercado Pago',
+                'cash': 'Efectivo'
+            };
+            
+            const statusNames = {
+                'pendiente': 'Pendiente',
+                'confirmada': 'Confirmada',
+                'completada': 'Completada',
+                'cancelada': 'Cancelada'
+            };
+            
+            const status = booking.status || 'pendiente';
+            const date = booking.preferredDate ? new Date(booking.preferredDate).toLocaleDateString('es-MX', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }) : 'Fecha no especificada';
+            
+            card.innerHTML = `
+                <div class="booking-header">
+                    <div class="booking-title">${typeNames[booking.apartmentType] || booking.apartmentType}</div>
+                    <div class="booking-status status-${status}">${statusNames[status]}</div>
+                </div>
+                <div class="booking-details">
+                    <div class="booking-detail">
+                        <i class="fas fa-calendar"></i>
+                        <span>${date}</span>
+                    </div>
+                    <div class="booking-detail">
+                        <i class="fas fa-broom"></i>
+                        <span>${booking.quantity} limpieza(s)</span>
+                    </div>
+                    <div class="booking-detail">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span>$${booking.totalPrice.toLocaleString()} MXN</span>
+                    </div>
+                    <div class="booking-detail">
+                        <i class="fas fa-credit-card"></i>
+                        <span>${paymentNames[booking.paymentMethod] || booking.paymentMethod}</span>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Logout
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert('Error al cerrar sesión: ' + error.message);
+            }
+        };
+    </script>
+</body>
+</html>
