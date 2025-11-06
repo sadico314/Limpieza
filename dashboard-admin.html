@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo - Limpieza Hilaria</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primario: #2c5f2d;
+            --color-secundario: #97c1a7;
+            --color-acento: #f8b739;
+            --color-oscuro: #1a1a1a;
+            --color-gris: #666666;
+            --color-gris-claro: #f5f5f5;
+            --color-blanco: #ffffff;
+            --fuente-principal: 'Montserrat', sans-serif;
+        }
+
+        body {
+            font-family: var(--fuente-principal);
+            background: var(--color-gris-claro);
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+            color: var(--color-blanco);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: var(--color-acento);
+            font-size: 2rem;
+        }
+
+        .admin-badge {
+            background: var(--color-acento);
+            color: var(--color-oscuro);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-left: 15px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--color-acento);
+            color: var(--color-oscuro);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .btn-logout {
+            padding: 10px 25px;
+            background: var(--color-blanco);
+            color: var(--color-primario);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-logout:hover {
+            background: var(--color-gris-claro);
+        }
+
+        /* DASHBOARD */
+        .dashboard {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--color-oscuro);
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: var(--color-gris);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--color-blanco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--stat-color);
+        }
+
+        .stat-card.primary::before {
+            background: var(--color-primario);
+        }
+
+        .stat-card.accent::before {
+            background: var(--color-acento);
+        }
+
+        .stat-card.secondary::before {
+            background: var(--color-secundario);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .stat-card.primary .stat-icon {
+            background: rgba(44, 95, 45, 0.1);
+            color: var(--color-primario);
+        }
+
+        .stat-card.accent .stat-icon {
+            background: rgba(248, 183, 57, 0.1);
+            color: var(--color-acento);
+        }
+
+        .stat-card.secondary .stat-icon {
+            background: rgba(151, 193, 167, 0.1);
+            color: var(--color-secundario);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-oscuro);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--color-gris);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--color-gris-claro);
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: transparent;
+            border: none;
+            color: var(--color-gris);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--color-primario);
+        }
+
+        .tab.active {
+            color: var(--color-primario);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--color-primario);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* SECTION */
+        .section {
+            background: var(--color-blanco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--color-oscuro);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* FILTERS */
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            color: var(--color-gris);
+            font-weight: 600;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 10px 15px;
+            border: 2px solid var(--color-gris-claro);
+            border-radius: 8px;
+            font-family: var(--fuente-principal);
+            font-size: 1rem;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--color-primario);
+        }
+
+        /* TABLE */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--color-gris-claro);
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--color-oscuro);
+            font-size: 0.95rem;
+        }
+
+        td {
+            padding: 20px 15px;
+            border-bottom: 1px solid var(--color-gris-claro);
+        }
+
+        tbody tr {
+            transition: background 0.3s;
+        }
+
+        tbody tr:hover {
+            background: var(--color-gris-claro);
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-pendiente {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-confirmada {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-completada {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-cancelada {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            margin-right: 5px;
+        }
+
+        .btn-view {
+            background: var(--color-secundario);
+            color: var(--color-blanco);
+        }
+
+        .btn-edit {
+            background: var(--color-acento);
+            color: var(--color-oscuro);
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: var(--color-blanco);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--color-gris);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-blanco);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            color: var(--color-oscuro);
+        }
+
+        .modal-close {
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--color-gris);
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--color-oscuro);
+        }
+
+        .detail-group {
+            margin-bottom: 20px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--color-gris);
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            color: var(--color-oscuro);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-sparkles"></i>
+                <span>Limpieza Hilaria</span>
+                <span class="admin-badge">ADMIN</span>
+            </div>
+            <div class="nav-menu">
+                <div class="user-info">
+                    <div class="user-avatar">H</div>
+                    <span id="adminName">Hilaria</span>
+                </div>
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard">
+        <h1 class="page-title">Panel Administrativo</h1>
+        <p class="page-subtitle">Gestiona tu negocio desde un solo lugar</p>
+
+        <!-- ESTADÍSTICAS -->
+        <div class="stats-grid">
+            <div class="stat-card primary">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="totalBookings">0</div>
+                        <div class="stat-label">Total Reservas</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card accent">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="totalRevenue">$0</div>
+                        <div class="stat-label">Ingresos Totales</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card secondary">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="totalClients">0</div>
+                        <div class="stat-label">Total Clientes</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card primary">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="pendingBookings">0</div>
+                        <div class="stat-label">Pendientes</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('reservas')">
+                <i class="fas fa-calendar"></i> Reservas
+            </button>
+            <button class="tab" onclick="switchTab('clientes')">
+                <i class="fas fa-users"></i> Clientes
+            </button>
+        </div>
+
+        <!-- TAB: RESERVAS -->
+        <div id="reservas-tab" class="tab-content active">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-list"></i>
+                        Todas las Reservas
+                    </h2>
+                </div>
+
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Estado</label>
+                        <select id="filterStatus" onchange="filterBookings()">
+                            <option value="all">Todas</option>
+                            <option value="pendiente">Pendientes</option>
+                            <option value="confirmada">Confirmadas</option>
+                            <option value="completada">Completadas</option>
+                            <option value="cancelada">Canceladas</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Buscar</label>
+                        <input type="text" id="searchBookings" placeholder="Nombre, email..." onkeyup="filterBookings()">
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table id="bookingsTable">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Servicio</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <tr>
+                                <td colspan="6">
+                                    <div class="empty-state">
+                                        <i class="fas fa-calendar-times"></i>
+                                        <h3>No hay reservas aún</h3>
+                                        <p>Las reservas aparecerán aquí</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: CLIENTES -->
+        <div id="clientes-tab" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-users"></i>
+                        Todos los Clientes
+                    </h2>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Tipo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTableBody">
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <i class="fas fa-user-times"></i>
+                                        <h3>No hay clientes registrados</h3>
+                                        <p>Los clientes aparecerán aquí</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETALLES -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Detalles de Reserva</h2>
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { 
+            collection, 
+            getDocs,
+            query,
+            orderBy,
+            doc,
+            updateDoc,
+            deleteDoc
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        let allBookings = [];
+        let allClients = [];
+
+        // Check admin authentication
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Check if admin
+            if (user.email !== 'logan.gollas314@gmail.com' && !user.email.includes('admin')) {
+                alert('Acceso denegado. Solo administradores.');
+                window.location.href = 'dashboard-cliente.html';
+                return;
+            }
+
+            await loadDashboardData();
+        });
+
+        async function loadDashboardData() {
+            try {
+                await Promise.all([
+                    loadBookings(),
+                    loadClients()
+                ]);
+                updateStats();
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        async function loadBookings() {
+            try {
+                const q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'));
+                const querySnapshot = await getDocs(q);
+                
+                allBookings = [];
+                querySnapshot.forEach((doc) => {
+                    allBookings.push({ id: doc.id, ...doc.data() });
+                });
+                
+                displayBookings(allBookings);
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+            }
+        }
+
+        async function loadClients() {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'users'));
+                
+                allClients = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.role === 'cliente') {
+                        allClients.push({ id: doc.id, ...data });
+                    }
+                });
+                
+                displayClients(allClients);
+            } catch (error) {
+                console.error('Error loading clients:', error);
+            }
+        }
+
+        function displayBookings(bookings) {
+            const tbody = document.getElementById('bookingsTableBody');
+            
+            if (bookings.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fas fa-calendar-times"></i>
+                                <h3>No hay reservas</h3>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            
+            bookings.forEach(booking => {
+                const typeNames = {
+                    'chico': 'Depto Chico',
+                    'mediano': 'Depto Mediano',
+                    'grande': 'Depto Grande'
+                };
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${booking.clientName || 'N/A'}</td>
+                    <td>${typeNames[booking.apartmentType] || booking.apartmentType} (${booking.quantity}x)</td>
+                    <td>${booking.preferredDate || 'N/A'}</td>
+                    <td>$${(booking.totalPrice || 0).toLocaleString()}</td>
+                    <td><span class="badge badge-${booking.status || 'pendiente'}">${booking.status || 'Pendiente'}</span></td>
+                    <td>
+                        <button class="action-btn btn-view" onclick="viewBooking('${booking.id}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn btn-edit" onclick="changeStatus('${booking.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function displayClients(clients) {
+            const tbody = document.getElementById('clientsTableBody');
+            
+            if (clients.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fas fa-user-times"></i>
+                                <h3>No hay clientes</h3>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            
+            clients.forEach(client => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${client.nombre || ''} ${client.apellido || ''}</td>
+                    <td>${client.email || 'N/A'}</td>
+                    <td>${client.telefono || 'N/A'}</td>
+                    <td>${client.isFrequent ? '⭐ Frecuente' : 'Nuevo'}</td>
+                    <td>
+                        <button class="action-btn btn-view" onclick="viewClient('${client.id}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('totalBookings').textContent = allBookings.length;
+            document.getElementById('totalClients').textContent = allClients.length;
+            
+            const totalRevenue = allBookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
+            document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toLocaleString();
+            
+            const pending = allBookings.filter(b => b.status === 'pendiente').length;
+            document.getElementById('pendingBookings').textContent = pending;
+        }
+
+        window.switchTab = function(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + '-tab').classList.add('active');
+        };
+
+        window.filterBookings = function() {
+            const status = document.getElementById('filterStatus').value;
+            const search = document.getElementById('searchBookings').value.toLowerCase();
+            
+            let filtered = allBookings;
+            
+            if (status !== 'all') {
+                filtered = filtered.filter(b => b.status === status);
+            }
+            
+            if (search) {
+                filtered = filtered.filter(b => 
+                    (b.clientName || '').toLowerCase().includes(search) ||
+                    (b.clientEmail || '').toLowerCase().includes(search)
+                );
+            }
+            
+            displayBookings(filtered);
+        };
+
+        window.viewBooking = function(id) {
+            const booking = allBookings.find(b => b.id === id);
+            if (!booking) return;
+            
+            const modal = document.getElementById('detailsModal');
+            const body = document.getElementById('modalBody');
+            
+            body.innerHTML = `
+                <div class="detail-group">
+                    <div class="detail-label">Cliente</div>
+                    <div class="detail-value">${booking.clientName}</div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Email</div>
+                    <div class="detail-value">${booking.clientEmail}</div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Teléfono</div>
+                    <div class="detail-value">${booking.clientPhone}</div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Dirección</div>
+                    <div class="detail-value">${booking.clientAddress}</div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Servicio</div>
+                    <div class="detail-value">${booking.apartmentType} - ${booking.quantity} limpieza(s)</div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Fecha Preferida</div>
+                    <div class="detail-value">${booking.preferredDate}</div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Método de Pago</div>
+                    <div class="detail-value">${booking.paymentMethod}</div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Total</div>
+                    <div class="detail-value">$${booking.totalPrice.toLocaleString()} MXN</div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Instrucciones</div>
+                    <div class="detail-value">${booking.specialInstructions || 'Ninguna'}</div>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        };
+
+        window.changeStatus = async function(id) {
+            const newStatus = prompt('Nuevo estado (pendiente/confirmada/completada/cancelada):');
+            if (!newStatus) return;
+            
+            const validStatuses = ['pendiente', 'confirmada', 'completada', 'cancelada'];
+            if (!validStatuses.includes(newStatus)) {
+                alert('Estado inválido');
+                return;
+            }
+            
+            try {
+                await updateDoc(doc(db, 'bookings', id), {
+                    status: newStatus
+                });
+                alert('Estado actualizado');
+                await loadBookings();
+                updateStats();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        };
+
+        window.closeModal = function() {
+            document.getElementById('detailsModal').classList.remove('active');
+        };
+
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert('Error al cerrar sesión');
+            }
+        };
+    </script>
+</body>
+</html>
