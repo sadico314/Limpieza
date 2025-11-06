@@ -11,7 +11,7 @@ import { getStorage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-s
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDtMv3eCq9jptgEeMoDFug6YBxC-OuJHBO",
+  apiKey: "AIzaSyDtMv3eCq9jptgEeMoDFug6YBxC-OuJHBQ",
   authDomain: "limpieza-hilaria-web.firebaseapp.com",
   projectId: "limpieza-hilaria-web",
   storageBucket: "limpieza-hilaria-web.firebasestorage.app",
